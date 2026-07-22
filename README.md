@@ -39,6 +39,8 @@ Configure these repository or authorized organization Secrets:
 
 The workflow uses `docker.1ms.run/dokploy/dokploy:{tag}` and requires its target-platform digest to match the upstream image.
 
+Manual workflow runs default to dry-run mode. Clear the `dry_run` option only when an immediate update and MiaoMiao submission is intended; scheduled runs publish normally when a newer version is found.
+
 ## Local build
 
 ```bash
