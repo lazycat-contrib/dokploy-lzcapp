@@ -28,7 +28,6 @@ application:
         - /*
       do:
         - src: file:///lzcapp/pkg/content/lazycat-injects/lzc-file-chooser-inject.js
-
 services:
   dokploy-db:
     image: docker.1ms.run/library/postgres:16
@@ -39,9 +38,9 @@ services:
     binds:
       - /lzcapp/var/postgres:/var/lib/postgresql/data
     mem_limit: 1g
-
   dokploy:
     # dokploy/dokploy:v0.29.13
+    # upstream: dokploy/dokploy:v0.29.13
     image: docker.1ms.run/dokploy/dokploy:v0.29.13
     runtime: sysbox-runc
     depends_on:
@@ -60,14 +59,12 @@ services:
       /bin/sh /lzcapp/pkg/content/bootstrap-dokploy.sh
     mem_limit: 3g
     cpus: 2.0
-
   dokploy-traefik-gateway:
     image: docker.1ms.run/library/haproxy:3.2-alpine
     command: haproxy -W -db -f /lzcapp/pkg/content/haproxy.cfg
     depends_on:
       - dokploy
     mem_limit: 128m
-
 usage: |
   首次使用前需要启用 Playground Docker；若 /data/playground/docker.sock 不存在，请先安装官方 Dockge 并重启微服。
   Dokploy 控制台由懒猫管理员入口保护，但应用自身仍需首次注册账号。
