@@ -1,0 +1,11 @@
+manifest: ./lzc-manifest.yml
+pkgout: ./dist
+icon: ./icon.png
+contentdir: ./content
+
+compose_override:
+  services:
+    dokploy:
+      volumes:
+        - /data/playground/docker.sock:/var/run/docker.sock
+        - /etc/dokploy:/etc/dokploy

@@ -1,0 +1,75 @@
+application:
+  subdomain: dokploy
+  background_task: true
+  upstreams:
+    - location: /
+      backend: http://dokploy:3000/
+  ingress:
+    - protocol: tcp
+      port: 80
+      service: dokploy-traefik-gateway
+      publish_port: "80"
+      yes_i_want_80_443: true
+      description: "Dokploy Traefik HTTP"
+    - protocol: tcp
+      port: 443
+      service: dokploy-traefik-gateway
+      publish_port: "443"
+      yes_i_want_80_443: true
+      description: "Dokploy Traefik HTTPS"
+  health_check:
+    test_url: http://dokploy:3000/api/trpc/settings.health
+    timeout: 10s
+    start_period: 180s
+  injects:
+    - id: open-save-chooser
+      on: browser
+      when:
+        - /*
+      do:
+        - src: file:///lzcapp/pkg/content/lazycat-injects/lzc-file-chooser-inject.js
+
+services:
+  dokploy-db:
+    image: docker.1ms.run/library/postgres:16
+    environment:
+      - POSTGRES_USER=dokploy
+      - POSTGRES_DB=dokploy
+      - POSTGRES_PASSWORD={{ .INTERNAL.postgres_password }}
+    binds:
+      - /lzcapp/var/postgres:/var/lib/postgresql/data
+    mem_limit: 1g
+
+  dokploy:
+    # dokploy/dokploy:v0.29.13
+    image: docker.1ms.run/dokploy/dokploy:v0.29.13
+    runtime: sysbox-runc
+    depends_on:
+      - dokploy-db
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - DATABASE_URL=postgresql://dokploy:{{ .INTERNAL.postgres_password }}@dokploy-db:5432/dokploy
+      - BETTER_AUTH_SECRET={{ stable_secret "dokploy_better_auth" }}
+      - RELEASE_TAG=latest
+      - TRAEFIK_PORT=30080
+      - TRAEFIK_SSL_PORT=30443
+      - TRAEFIK_HTTP3_PORT=30443
+    setup_script: |
+      /bin/sh /lzcapp/pkg/content/bootstrap-dokploy.sh
+    mem_limit: 3g
+    cpus: 2.0
+
+  dokploy-traefik-gateway:
+    image: docker.1ms.run/library/haproxy:3.2-alpine
+    command: haproxy -W -db -f /lzcapp/pkg/content/haproxy.cfg
+    depends_on:
+      - dokploy
+    mem_limit: 128m
+
+usage: |
+  首次使用前需要启用 Playground Docker；若 /data/playground/docker.sock 不存在，请先安装官方 Dockge 并重启微服。
+  Dokploy 控制台由懒猫管理员入口保护，但应用自身仍需首次注册账号。
+  Playground Docker 会被初始化为单节点 Swarm，Traefik 的外部 80/443 流量由本 LPK 转发。
+  请勿在 Dokploy 中执行自更新；应用版本由仓库的 GitHub Actions 自动更新。
