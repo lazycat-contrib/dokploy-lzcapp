@@ -1,5 +1,5 @@
 package: cloud.lazycat.app.dokploy
-version: 0.29.13
+version: 0.29.14
 name: Dokploy
 description: "A self-hosted application deployment platform running on LazyCat Playground Docker"
 min_os_version: 1.5.0
@@ -7,12 +7,10 @@ author: Dokploy
 license: Apache-2.0
 homepage: https://github.com/Dokploy/dokploy
 admin_only: true
-
 unsupported_platforms:
   - ios
   - android
   - tvos
-
 locales:
   zh:
     name: "Dokploy"
@@ -20,7 +18,6 @@ locales:
   en:
     name: "Dokploy"
     description: "A self-hosted application deployment platform running on LazyCat Playground Docker"
-
 permissions:
   required:
     - net.internet

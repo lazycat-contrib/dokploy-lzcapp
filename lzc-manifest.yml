@@ -40,8 +40,8 @@ services:
     mem_limit: 1g
   dokploy:
     # dokploy/dokploy:v0.29.13
-    # upstream: dokploy/dokploy:v0.29.13
-    image: docker.1ms.run/dokploy/dokploy:v0.29.13
+    # upstream: dokploy/dokploy:v0.29.14
+    image: docker.1ms.run/dokploy/dokploy:v0.29.14
     runtime: sysbox-runc
     depends_on:
       - dokploy-db
