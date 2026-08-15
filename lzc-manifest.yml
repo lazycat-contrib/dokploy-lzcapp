@@ -21,13 +21,7 @@ application:
     test_url: http://dokploy:3000/api/trpc/settings.health
     timeout: 10s
     start_period: 180s
-  injects:
-    - id: open-save-chooser
-      on: browser
-      when:
-        - /*
-      do:
-        - src: file:///lzcapp/pkg/content/lazycat-injects/lzc-file-chooser-inject.js
+
 services:
   dokploy-db:
     image: docker.1ms.run/library/postgres:16
