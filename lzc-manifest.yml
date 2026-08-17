@@ -23,11 +23,11 @@ application:
     start_period: 180s
 services:
   dokploy-db:
-    image: docker.1ms.run/library/postgres:16
+    image: registry.lazycat.cloud/czyt/library/postgres:1213d14f3606e644
     environment:
       - POSTGRES_USER=dokploy
       - POSTGRES_DB=dokploy
-      - POSTGRES_PASSWORD={{ .INTERNAL.postgres_password }}
+      - POSTGRES_PASSWORD={{ stable_secret "postgres_password" }}
     binds:
       - /lzcapp/var/postgres:/var/lib/postgresql/data
     mem_limit: 1g
@@ -42,7 +42,7 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - DOCKER_HOST=unix:///var/run/docker.sock
-      - DATABASE_URL=postgresql://dokploy:{{ .INTERNAL.postgres_password }}@dokploy-db:5432/dokploy
+      - DATABASE_URL=postgresql://dokploy:{{ stable_secret "postgres_password" }}@dokploy-db:5432/dokploy
       - BETTER_AUTH_SECRET={{ stable_secret "dokploy_better_auth" }}
       - RELEASE_TAG=latest
       - TRAEFIK_PORT=30080
