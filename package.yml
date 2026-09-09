@@ -1,5 +1,5 @@
 package: cloud.lazycat.app.dokploy
-version: 0.30.5
+version: 0.30.6
 name: Dokploy
 description: "A self-hosted application deployment platform running on LazyCat Playground Docker"
 min_os_version: 1.5.0
